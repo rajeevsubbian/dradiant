@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dradiant School - Coming Soon</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Montserrat", "Arial", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0a1128, #1c2541, #0a1128);
+        color: #ffffff;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: hidden;
+        position: relative;
+        padding: 20px;
+      }
+
+      /* Star background */
+      .stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .star {
+        position: absolute;
+        background-color: #ffffff;
+        border-radius: 50%;
+        animation: twinkle var(--duration) infinite ease-in-out;
+        opacity: 0.7;
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.2;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .shooting-star {
+        position: absolute;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          #3a86ff,
+          #8338ec,
+          transparent
+        );
+        animation: shootingStar var(--duration) infinite linear;
+        opacity: 0;
+        transform: rotate(var(--rotation));
+      }
+
+      @keyframes shootingStar {
+        0% {
+          transform: translateX(-100vw) rotate(var(--rotation));
+          opacity: 1;
+        }
+        70%,
+        100% {
+          transform: translateX(calc(100vw + 100px)) rotate(var(--rotation));
+          opacity: 0;
+        }
+      }
+
+      /* Main container */
+      .container {
+        text-align: center;
+        z-index: 2;
+        padding: 30px 20px;
+        border-radius: 10px;
+        position: relative;
+        backdrop-filter: blur(5px);
+        background-color: rgba(10, 17, 40, 0.6);
+        box-shadow: 0 0 30px rgba(23, 107, 255, 0.3);
+        overflow: hidden;
+        width: min(90%, 800px);
+        margin: 0 auto;
+      }
+
+      .glowing-border {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 2px solid transparent;
+        border-radius: 10px;
+        animation: borderGlow 8s infinite linear;
+        pointer-events: none;
+      }
+
+      @keyframes borderGlow {
+        0%,
+        100% {
+          border-color: #3a86ff;
+          box-shadow: 0 0 15px #3a86ff;
+        }
+        25% {
+          border-color: #8338ec;
+          box-shadow: 0 0 15px #8338ec;
+        }
+        50% {
+          border-color: #ff006e;
+          box-shadow: 0 0 15px #ff006e;
+        }
+        75% {
+          border-color: #3a86ff;
+          box-shadow: 0 0 15px #3a86ff;
+        }
+      }
+
+      /* Logo animation */
+      .logo-container {
+        position: relative;
+        margin-bottom: 30px;
+        height: auto;
+        min-height: 80px;
+      }
+
+      .logo {
+        display: inline-block;
+        background: linear-gradient(45deg, #3a86ff, #8338ec, #ff006e);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 900;
+        opacity: 0;
+        transform: scale(0.5);
+        animation: logoReveal 1.5s ease-out forwards;
+      }
+
+      .logo-main {
+        font-size: clamp(2.5rem, 8vw, 4rem);
+        margin-bottom: 5px;
+      }
+
+      .logo-sub {
+        font-size: clamp(1.8rem, 6vw, 3rem);
+      }
+
+      @keyframes logoReveal {
+        0% {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      /* Subtitle */
+      .subtitle {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        margin-bottom: 25px;
+        background: linear-gradient(
+          to right,
+          #ff7e5f,
+          #feb47b,
+          #6a11cb,
+          #2575fc
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 1s 1.7s forwards;
+      }
+
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Countdown timer */
+      .countdown {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 25px 0;
+        opacity: 0;
+        animation: fadeIn 1s 2s forwards;
+      }
+
+      .countdown-item {
+        flex: 0 0 auto;
+        margin: 5px;
+      }
+
+      .countdown-value {
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+        font-weight: bold;
+        color: #3a86ff;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        min-width: 70px;
+        border-radius: 5px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .countdown-value:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        animation: shimmer 2s infinite;
+      }
+
+      @keyframes shimmer {
+        100% {
+          left: 100%;
+        }
+      }
+
+      .countdown-label {
+        font-size: 0.9rem;
+        color: #a6c1ee;
+        margin-top: 5px;
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Email form */
+      .email-form {
+        margin-top: 30px;
+        opacity: 0;
+        animation: fadeIn 1s 2.3s forwards;
+        width: 100%;
+      }
+
+      .email-input {
+        padding: 15px 20px;
+        border: none;
+        border-radius: 30px;
+        font-size: 1rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        outline: none;
+        width: min(100%, 350px);
+        text-align: center;
+        transition: all 0.3s;
+        border: 1px solid rgba(58, 134, 255, 0.3);
+        margin-bottom: 15px;
+      }
+
+      .email-input:focus {
+        background-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 15px rgba(58, 134, 255, 0.5);
+        border-color: #3a86ff;
+      }
+
+      .submit-btn {
+        padding: 12px 30px;
+        background: linear-gradient(45deg, #3a86ff, #8338ec);
+        color: white;
+        border: none;
+        border-radius: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 15px rgba(58, 134, 255, 0.3);
+      }
+
+      .submit-btn:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: all 0.3s;
+        z-index: -1;
+      }
+
+      .submit-btn:hover:before {
+        animation: shine 1.5s infinite;
+      }
+
+      @keyframes shine {
+        100% {
+          left: 100%;
+        }
+      }
+
+      /* Social icons */
+      .social-icons {
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        opacity: 0;
+        animation: fadeIn 1s 2.6s forwards;
+      }
+
+      .social-icon {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        cursor: pointer;
+        font-size: 1.2rem;
+      }
+
+      .social-icon:hover {
+        transform: translateY(-5px);
+        background-color: #3a86ff;
+        box-shadow: 0 5px 15px rgba(58, 134, 255, 0.5);
+      }
+
+      /* Floating shapes */
+      .floating-shapes {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      .shape {
+        position: absolute;
+        background: linear-gradient(
+          45deg,
+          rgba(58, 134, 255, 0.2),
+          rgba(131, 56, 236, 0.2)
+        );
+        border-radius: 50%;
+        animation: float var(--duration) infinite ease-in-out;
+        opacity: 0.3;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(var(--travel)) rotate(var(--rotation));
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 767px) {
+        .container {
+          padding: 20px 15px;
+        }
+
+        .countdown {
+          gap: 5px;
+        }
+
+        .countdown-item {
+          margin: 2px;
+        }
+
+        .countdown-value {
+          min-width: 60px;
+          padding: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stars"></div>
+    <div class="floating-shapes"></div>
+
+    <div class="container">
+      <div class="glowing-border"></div>
+
+      <div class="logo-container">
+        <h1 class="logo logo-main">D'RADIANT</h1>
+        <h1 class="logo logo-sub">SCHOOL</h1>
+      </div>
+
+      <h2 class="subtitle">
+        Our amazing educational platform is launching soon!
+      </h2>
+
+      <div class="countdown">
+        <div class="countdown-item">
+          <div class="countdown-value" id="days">00</div>
+          <div class="countdown-label">Days</div>
+        </div>
+        <div class="countdown-item">
+          <div class="countdown-value" id="hours">00</div>
+          <div class="countdown-label">Hours</div>
+        </div>
+        <div class="countdown-item">
+          <div class="countdown-value" id="minutes">00</div>
+          <div class="countdown-label">Minutes</div>
+        </div>
+        <div class="countdown-item">
+          <div class="countdown-value" id="seconds">00</div>
+          <div class="countdown-label">Seconds</div>
+        </div>
+      </div>
+
+      <div class="email-form">
+        <input
+          type="email"
+          class="email-input"
+          placeholder="Enter your email for updates"
+        />
+        <button class="submit-btn">Notify Me</button>
+      </div>
+
+      <div class="social-icons">
+        <div class="social-icon">f</div>
+        <div class="social-icon">in</div>
+        <div class="social-icon">t</div>
+        <div class="social-icon">ig</div>
+      </div>
+    </div>
+
+    <script>
+      // Create stars
+      const starsContainer = document.querySelector(".stars");
+      const createStars = () => {
+        const numberOfStars = Math.min(window.innerWidth / 3, 200); // Responsive number of stars
+
+        for (let i = 0; i < numberOfStars; i++) {
+          const star = document.createElement("div");
+          star.classList.add("star");
+
+          const size = Math.random() * 3;
+          const left = Math.random() * 100;
+          const top = Math.random() * 100;
+          const duration = 3 + Math.random() * 7;
+
+          star.style.width = `${size}px`;
+          star.style.height = `${size}px`;
+          star.style.left = `${left}%`;
+          star.style.top = `${top}%`;
+          star.style.setProperty("--duration", `${duration}s`);
+
+          starsContainer.appendChild(star);
+        }
+      };
+
+      // Create shooting stars
+      const createShootingStars = () => {
+        const numberOfStars = Math.min(window.innerWidth / 200, 5); // Fewer on mobile
+
+        for (let i = 0; i < numberOfStars; i++) {
+          const shootingStar = document.createElement("div");
+          shootingStar.classList.add("shooting-star");
+
+          const top = Math.random() * 100;
+          const duration = 5 + Math.random() * 10;
+          const delay = Math.random() * 15;
+          const rotation = Math.random() * 20 - 10;
+          const width = Math.min(100, Math.max(50, window.innerWidth / 10));
+
+          shootingStar.style.width = `${width}px`;
+          shootingStar.style.top = `${top}%`;
+          shootingStar.style.setProperty("--duration", `${duration}s`);
+          shootingStar.style.setProperty("--rotation", `${rotation}deg`);
+          shootingStar.style.animationDelay = `${delay}s`;
+
+          starsContainer.appendChild(shootingStar);
+        }
+      };
+
+      // Create floating shapes
+      const shapesContainer = document.querySelector(".floating-shapes");
+      const createShapes = () => {
+        const numberOfShapes = Math.min(window.innerWidth / 100, 10); // Responsive number of shapes
+
+        for (let i = 0; i < numberOfShapes; i++) {
+          const shape = document.createElement("div");
+          shape.classList.add("shape");
+
+          // Responsive size calculation
+          const size = Math.min(
+            50 + Math.random() * 100,
+            window.innerWidth / 5
+          );
+          const left = Math.random() * 100;
+          const top = Math.random() * 100;
+          const duration = 15 + Math.random() * 20;
+          const travel = Math.min(
+            Math.random() * 100 - 50,
+            window.innerHeight / 10
+          );
+          const rotation = Math.random() * 180 - 90;
+
+          shape.style.width = `${size}px`;
+          shape.style.height = `${size}px`;
+          shape.style.left = `${left}%`;
+          shape.style.top = `${top}%`;
+          shape.style.setProperty("--duration", `${duration}s`);
+          shape.style.setProperty("--travel", `${travel}px`);
+          shape.style.setProperty("--rotation", `${rotation}deg`);
+          shape.style.animationDelay = `${-Math.random() * 10}s`;
+
+          shapesContainer.appendChild(shape);
+        }
+      };
+
+      // Animate logo
+      const animateLogo = () => {
+        const logoElements = document.querySelectorAll(".logo");
+        logoElements.forEach((logo, index) => {
+          logo.style.animationDelay = `${0.5 + index * 0.2}s`;
+        });
+      };
+
+      // Countdown timer
+      const updateCountdown = () => {
+        const launchDate = new Date();
+        launchDate.setDate(launchDate.getDate() + 7); // 7 days from now
+
+        const daysEl = document.getElementById("days");
+        const hoursEl = document.getElementById("hours");
+        const minutesEl = document.getElementById("minutes");
+        const secondsEl = document.getElementById("seconds");
+
+        const updateTimer = () => {
+          const now = new Date();
+          const diff = launchDate - now;
+
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+          daysEl.textContent = days.toString().padStart(2, "0");
+          hoursEl.textContent = hours.toString().padStart(2, "0");
+          minutesEl.textContent = minutes.toString().padStart(2, "0");
+          secondsEl.textContent = seconds.toString().padStart(2, "0");
+        };
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+      };
+
+      // Handle window resize
+      const handleResize = () => {
+        // Clear existing elements
+        starsContainer.innerHTML = "";
+        shapesContainer.innerHTML = "";
+
+        // Recreate with responsive values
+        createStars();
+        createShootingStars();
+        createShapes();
+      };
+
+      // Initialize
+      window.addEventListener("load", () => {
+        createStars();
+        createShootingStars();
+        createShapes();
+        animateLogo();
+        updateCountdown();
+
+        // Add resize listener with debounce
+        let resizeTimer;
+        window.addEventListener("resize", () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(handleResize, 250);
+        });
+      });
+    </script>
+  </body>
+</html>

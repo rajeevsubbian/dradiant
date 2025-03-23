@@ -4,9 +4,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Email, Length
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'radiansecretkey'  # Change this for security
-Bootstrap(app)
+application = Flask(__name__)  # Change 'app' to 'application'
+application.config['SECRET_KEY'] = 'radiansecretkey'
+Bootstrap(application)
 
 # Contact Form
 class ContactForm(FlaskForm):
@@ -21,36 +21,34 @@ class ContactForm(FlaskForm):
     message = TextAreaField("Your Message", validators=[DataRequired(), Length(min=10, max=500)])
     submit = SubmitField("Send Message")
 
-@app.route("/")
+@application.route("/")
 def home():
     return render_template("index.html")
 
-@app.route("/contact", methods=["GET", "POST"])
+@application.route("/contact", methods=["GET", "POST"])
 def contact():
     form = ContactForm()
     if form.validate_on_submit():
-        # Simulate sending an email (print to console instead)
         print(f"Name: {form.name.data}")
         print(f"Email: {form.email.data}")
         print(f"Subject: {form.subject.data}")
         print(f"Message: {form.message.data}")
-
         flash("Your message has been sent! Our team will get back to you soon.", "success")
         return redirect(url_for("contact"))
 
     return render_template("contact.html", form=form)
 
-@app.route("/programs")
+@application.route("/programs")
 def programs():
     return render_template("programs.html")
 
-@app.route("/gallery")
+@application.route("/gallery")
 def gallery():
     return render_template("gallery.html")
 
-@app.route("/about")
+@application.route("/about")
 def about():
     return render_template("about.html")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    application.run(debug=True)
